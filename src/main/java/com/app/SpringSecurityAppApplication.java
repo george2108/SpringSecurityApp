@@ -9,6 +9,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.List;
 import java.util.Set;
@@ -61,7 +62,7 @@ public class SpringSecurityAppApplication {
 			// crear usuarios
 			UserEntity jorgeUser = UserEntity.builder()
 					.username("jorge")
-					.password("password")
+					.password(new BCryptPasswordEncoder().encode("password"))
 					.isEnabled(true)
 					.accountNoExpired(true)
 					.accountNoLocked(true)
@@ -70,7 +71,7 @@ public class SpringSecurityAppApplication {
 					.build();
 			UserEntity barbaraUser = UserEntity.builder()
 					.username("barbi")
-					.password("password")
+					.password(new BCryptPasswordEncoder().encode("password"))
 					.isEnabled(true)
 					.accountNoExpired(true)
 					.accountNoLocked(true)
@@ -79,7 +80,7 @@ public class SpringSecurityAppApplication {
 					.build();
 			UserEntity vicenteUser = UserEntity.builder()
 					.username("vicente")
-					.password("password")
+					.password(new BCryptPasswordEncoder().encode("password"))
 					.isEnabled(true)
 					.accountNoExpired(true)
 					.accountNoLocked(true)
@@ -88,7 +89,7 @@ public class SpringSecurityAppApplication {
 					.build();
 			UserEntity lupitaUser = UserEntity.builder()
 					.username("lupita")
-					.password("password")
+					.password(new BCryptPasswordEncoder().encode("password"))
 					.isEnabled(true)
 					.accountNoExpired(true)
 					.accountNoLocked(true)
