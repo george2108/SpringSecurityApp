@@ -4,7 +4,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/methods")
 // habilita la seguridad a nivel metodo
 @PreAuthorize("denyAll()")
 public class TestAuthController {
@@ -22,6 +22,7 @@ public class TestAuthController {
     }
 
     @PutMapping
+    @PreAuthorize("hasAuthority('UPDATE')")
     public String helloPut(){
         return "Hello world - PUT";
     }

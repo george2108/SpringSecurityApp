@@ -1,6 +1,9 @@
 package com.app.config;
 
+import com.app.config.filters.JWTTokenVerify;
 import com.app.services.UserDetailsServiceImpl;
+import com.app.utils.JWTUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,9 +17,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 
 // para configurar spring security
@@ -24,6 +27,25 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
+    @Autowired
+    private JWTUtils jwtUtils;
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(
+            // con este objeto creamos el comportamiento de nuestro filtro
+            HttpSecurity httpSecurity
+    ) throws Exception {
+        return httpSecurity
+                .csrf(AbstractHttpConfigurer::disable)
+                // deshabilitar el manejo de sesion de spring boot y guiarnos con el de jwt
+                .sessionManagement(sm -> sm
+                        .sessionCreationPolicy((SessionCreationPolicy.STATELESS))
+                )
+                .httpBasic(Customizer.withDefaults())
+                // agregar el filtro de jwt antes del filtro de autenticación
+                .addFilterBefore(new JWTTokenVerify(jwtUtils), BasicAuthenticationFilter.class)
+                .build();
+    }
 
     // es el primer filtro que inicia al realizar una peticion http
     // aqui definimos nuestras validaciones de que rutas deben tener autorizacion
@@ -49,20 +71,6 @@ public class SecurityConfig {
                 })
                 .build();
     }*/
-    @Bean
-    public SecurityFilterChain securityFilterChain(
-            // con este objeto creamos el comportamiento de nuestro filtro
-            HttpSecurity httpSecurity
-    ) throws Exception {
-        return httpSecurity
-                .csrf(AbstractHttpConfigurer::disable)
-                // deshabilitar el manejo de sesion de spring boot y guiarnos con el de jwt
-                .sessionManagement(sm -> sm
-                        .sessionCreationPolicy((SessionCreationPolicy.STATELESS))
-                )
-                .httpBasic(Customizer.withDefaults())
-                .build();
-    }
 
     // encargado de la autenticacion
     // necesita providers para conocer los usuarios
